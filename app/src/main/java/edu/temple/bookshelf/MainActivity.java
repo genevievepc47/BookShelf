@@ -22,15 +22,24 @@ public class MainActivity extends AppCompatActivity {
         for(int i =0; i<10; i++)
         {
             //put 10 books in the bookList
-            bookList.add( getBooks());
+            bookList.add( getBook());
         }
 
-        //for(int i = 0; i<10; i++)
-        //{
-            //Toast.makeText(getApplicationContext(), bookList.get(i).toString(), Toast.LENGTH_SHORT).show();
-        //}
+       //put in the book list fragment
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("books",bookList);
+
+        BookListFragment bookListFragment = new BookListFragment();
+        bookListFragment.setArguments(bundle);
+
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container1, bookListFragment)
+                .commit();
+
     }
-    public HashMap<String, String> getBooks()
+    private HashMap<String, String> getBook()
     {
 
         HashMap<String, String> book = new HashMap<>();
