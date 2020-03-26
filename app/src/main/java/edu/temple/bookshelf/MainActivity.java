@@ -10,14 +10,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
 
+public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
+
+    ArrayList<HashMap<String, String>> bookList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<HashMap<String, String>> bookList = new ArrayList<>();
+
 
         for(int i =0; i<10; i++)
         {
@@ -39,6 +41,25 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
     }
+
+    // The Activity handles receiving a message from one Fragment
+    // and passing it on to the other Fragment
+    @Override
+    public void onFragmentInteraction(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("book",bookList.get(position));
+
+        BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+        bookDetailsFragment.setArguments(bundle);
+
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container1, bookDetailsFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     private HashMap<String, String> getBook()
     {
 
@@ -59,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         return book;
 
     }//end get books method
+
 
     /*
  In Search of Lost Time by Marcel Proust. ...

@@ -39,7 +39,7 @@ public class BookListFragment extends Fragment {
     private ArrayList<HashMap<String, String>> books;
 
 
-    //private OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
 
     public BookListFragment() {
         // Required empty public constructor
@@ -78,14 +78,31 @@ public class BookListFragment extends Fragment {
         layout =  inflater.inflate(R.layout.fragment_book_list, container, false);
 
         final ListView list = layout.findViewById(R.id.list);
-        ArrayAdapter<HashMap<String,String>> arrayAdapter = new ArrayAdapter<HashMap<String, String>>(BookListFragment.super.getContext(),android.R.layout.simple_list_item_1, books);
-        list.setAdapter(arrayAdapter);
+
+        //this line not correct, make my own xml file and use that instead of "android.R.layout.simple_list_item_1"
+        //adapter = new ArrayAdapter<String>(this, R.layout.listitem_row,R.id.textView1, elename);
+        //ArrayAdapter<HashMap<String,String>> arrayAdapter = new ArrayAdapter<HashMap<String, String>>(BookListFragment.super.getContext(),android.R.layout.simple_list_item_1, books);
+
+        // Create the adapter to convert the array to views
+        bookAdapter adapter = new bookAdapter(getContext(), books);
+
+// Attach the adapter to a ListView
+        ListView listView = (ListView) layout.findViewById(R.id.list);
+        listView.setAdapter(adapter);
+        //list.setAdapter(arrayAdapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String clickedItem=(String) list.getItemAtPosition(position);//gives error
-//
+
+                //When the user clicks one of the books in the ListView, the fragment should invoke a
+                //method in its parent with the index of the book that was clicked.
+
+                //i think this is saying send it back to the parent, so were gonna need an interface
+                //then the parent will call the other fragment
+
+                mListener.onFragmentInteraction(position);
+
             }
         });
 
@@ -102,7 +119,7 @@ public class BookListFragment extends Fragment {
 
      */
 
-    /*
+/*
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -114,16 +131,16 @@ public class BookListFragment extends Fragment {
         }
     }
 
-     */
+*/
 
-    /*
+
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-     */
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -137,6 +154,6 @@ public class BookListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(int position);
     }
 }
