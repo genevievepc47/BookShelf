@@ -77,7 +77,9 @@ public class BookListFragment extends Fragment {
         // Inflate the layout for this fragment
         layout =  inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        final ListView list = layout.findViewById(R.id.list);
+        //final ListView list = layout.findViewById(R.id.list);
+
+
 
         //this line not correct, make my own xml file and use that instead of "android.R.layout.simple_list_item_1"
         //adapter = new ArrayAdapter<String>(this, R.layout.listitem_row,R.id.textView1, elename);
@@ -91,7 +93,7 @@ public class BookListFragment extends Fragment {
         listView.setAdapter(adapter);
         //list.setAdapter(arrayAdapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -119,7 +121,7 @@ public class BookListFragment extends Fragment {
 
      */
 
-/*
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -131,7 +133,7 @@ public class BookListFragment extends Fragment {
         }
     }
 
-*/
+
 
 
     @Override
@@ -153,7 +155,7 @@ public class BookListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onFragmentInteraction(int position);
     }
 }
