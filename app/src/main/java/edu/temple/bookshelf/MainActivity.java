@@ -2,6 +2,7 @@ package edu.temple.bookshelf;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -12,6 +13,7 @@ import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
+   int orientation;
 
     ArrayList<HashMap<String, String>> bookList = new ArrayList<>();
     @Override
@@ -27,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             bookList.add( getBook());
         }
 
-       //put in the book list fragment
+
+        //put in the book list fragment
         Bundle bundle = new Bundle();
         bundle.putSerializable("books",bookList);
 
@@ -37,8 +40,32 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container1, bookListFragment)
+                .replace(R.id.container1, bookListFragment)
                 .commit();
+
+        int position =0;
+
+        orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // In landscape
+            Bundle bundle2 = new Bundle();
+            bundle2.putSerializable("book",bookList.get(position));
+
+            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+            bookDetailsFragment.setArguments(bundle2);
+
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container2, bookDetailsFragment)
+                    .commit();
+
+
+        } else if(orientation == Configuration.ORIENTATION_PORTRAIT){
+            // In portrait
+        }
+
+
 
     }
 
@@ -46,19 +73,37 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // and passing it on to the other Fragment
     @Override
     public void onFragmentInteraction(int position) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("book",bookList.get(position));
 
-        BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
-        bookDetailsFragment.setArguments(bundle);
+        if(orientation == Configuration.ORIENTATION_PORTRAIT) { //if in portrait
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("book", bookList.get(position));
+
+            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+            bookDetailsFragment.setArguments(bundle);
 
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container1, bookDetailsFragment)
-                .addToBackStack(null)
-                .commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container1, bookDetailsFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+        else if(orientation == Configuration.ORIENTATION_LANDSCAPE)
+        {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("book", bookList.get(position));
+
+            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+            bookDetailsFragment.setArguments(bundle);
+
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container2, bookDetailsFragment)
+                    .commit();
+        }
     }
+
 
     private HashMap<String, String> getBook()
     {
