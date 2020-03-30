@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import java.util.HashMap;
 
 
@@ -31,7 +34,7 @@ public class BookDetailsFragment extends Fragment {
     //private static final String ARG_PARAM2 = "param2";
 
 
-    private HashMap<String, String>  book;
+    private book  book;
     //private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -49,7 +52,7 @@ public class BookDetailsFragment extends Fragment {
      * @return A new instance of fragment BookDetailsFragment.
      */
 
-    public static BookDetailsFragment newInstance(HashMap<String, String> book) {
+    public static BookDetailsFragment newInstance(book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, book);
@@ -62,7 +65,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            book = (HashMap<String, String>) getArguments().getSerializable(ARG_PARAM1);
+            book = (book) getArguments().getSerializable(ARG_PARAM1);
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -75,16 +78,24 @@ public class BookDetailsFragment extends Fragment {
 
         displayBook( book);
 
+
+
+
         return layout;
     }
 
-    public void displayBook(HashMap<String, String> book)
+    public void displayBook(book newBook)
     {
         TextView nameTextView = layout.findViewById(R.id.bookName);
-        nameTextView.setText(book.keySet().toArray()[0].toString());
+        nameTextView.setText(newBook.getBookName());
 
         TextView authorTextView = layout.findViewById(R.id.bookAuthor);
-        authorTextView.setText(book.get(book.keySet().toArray()[0].toString()));
+        authorTextView.setText(newBook.getBookAuthor());
+
+
+
+
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

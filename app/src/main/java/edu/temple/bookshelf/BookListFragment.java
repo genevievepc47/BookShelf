@@ -36,7 +36,7 @@ public class BookListFragment extends Fragment {
 
 
 
-    private ArrayList<HashMap<String, String>> books;
+    private ArrayList<book> books;
 
 
     private OnFragmentInteractionListener mListener;
@@ -54,7 +54,7 @@ public class BookListFragment extends Fragment {
      * @return A new instance of fragment BookListFragment.
      */
 
-    public static BookListFragment newInstance(ArrayList<HashMap<String, String>> books) {
+    public static BookListFragment newInstance(ArrayList<book> books) {
         BookListFragment fragment = new BookListFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_PARAM1, books);

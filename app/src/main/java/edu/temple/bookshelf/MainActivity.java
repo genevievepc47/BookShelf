@@ -6,6 +6,17 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +26,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
    int orientation;
 
-    ArrayList<HashMap<String, String>> bookList = new ArrayList<>();
+    ArrayList<book> bookList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +34,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
 
 
-        for(int i =0; i<10; i++)
+        ArrayList<book> tempBooks = getBooks();
+
+        for(book tempBook: tempBooks)
         {
-            //put 10 books in the bookList
-            bookList.add( getBook());
+            bookList.add(tempBook);
         }
+
 
 
         //put in the book list fragment
@@ -105,10 +118,64 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
 
-    private HashMap<String, String> getBook()
+    private ArrayList<book> getBooks()
     {
 
-        HashMap<String, String> book = new HashMap<>();
+
+        final ArrayList<book> bookList = new ArrayList<>();
+        RequestQueue requestQueue;
+
+        requestQueue = Volley.newRequestQueue(this);
+        String searchTerm = "";
+
+        String url = "https://kamorris.com/lab/abp/booksearch.php?search=" + "";
+
+        // Initialize a new JsonArrayRequest instance
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // Do something with response
+
+
+                        // Process the JSON
+                        try{
+                            // Loop through the array elements
+                            for(int i=0;i<response.length();i++){
+                                // Get current json object
+                                JSONObject book = response.getJSONObject(i);
+
+                                // Get the current student (json object) data
+                                int id = book.getInt("book_id");
+                                String title = book.getString("title");
+                                String author = book.getString("author");
+                                String bookURL = book.getString("cover_url");
+
+
+                                book newBook = new book(title, author, id, bookURL);
+
+                                bookList.add(newBook);
+
+                            }
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        // Do something when error occurred
+                        Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+                    }
+                }
+        );
+
+        // Add JsonArrayRequest to the RequestQueue
+        requestQueue.add(jsonArrayRequest);
 
         String[] titles = {"In Search of Lost Time","Ulysses", "Don Quixote", "The Great Gatsby", "One Hundred Years of Solitude", "Moby Dick", "War and Peace", "Lolita", "Don Quixote", "Harry Potter series", "David Copperfield", "The Three Musketeers", "River of Smoke", "Death of City", "Politics", "Power Politics", "Dreams from My Father", "The Final Passage", "Freedom in Exile"};
         String[] authors = {"Marcel Proust","James Joyce", "Miguel de Cervantes", "F. Scott Fitzgerald", "Gabriel Garcia Marquez", "Herman Melville", "Leo Tolstoy", "Vladimir Nabokov", "Miguel de Cervantes", "J.K.Rowling", "Charles Dickens", "Alexander Dumas", "Amitav Ghose", "Amrita Pritam", "Aristotle", "Arundati Roy", "Barack Obama", "Caryl Phjillips", "Dalai Lama"};
@@ -119,10 +186,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         int rand_int2 = rand.nextInt(19);//get random number from 1 to 20
 
 
-        book.put(titles[rand_int1], authors[rand_int2]);
 
 
-        return book;
+
+
+        return bookList;
 
     }//end get books method
 
