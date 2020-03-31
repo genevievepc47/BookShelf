@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -78,6 +80,21 @@ public class BookListFragment extends Fragment {
         layout =  inflater.inflate(R.layout.fragment_book_list, container, false);
 
         //final ListView list = layout.findViewById(R.id.list);
+
+        final Button searchButton = layout.findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText editText = layout.findViewById(R.id.editText);
+
+                String searchTerm = editText.getText().toString();
+
+                mListener.onFragmentInteraction(searchTerm);
+
+            }
+        });
 
 
 
@@ -157,5 +174,6 @@ public class BookListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
 
         void onFragmentInteraction(int position);
+        void onFragmentInteraction(String searchTerm);
     }
 }
