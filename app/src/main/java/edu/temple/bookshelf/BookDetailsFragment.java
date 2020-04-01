@@ -9,10 +9,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
@@ -91,6 +93,9 @@ public class BookDetailsFragment extends Fragment {
 
         TextView authorTextView = layout.findViewById(R.id.bookAuthor);
         authorTextView.setText(newBook.getBookAuthor());
+
+        ImageView coverImageView = layout.findViewById(R.id.imageView);
+        Picasso.get().load(newBook.getbookCoverURL()).into(coverImageView);
 
 
 
