@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -33,9 +34,11 @@ public class BookListFragment extends Fragment {
 
     View layout;
 
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "books";
 
+    bookAdapter adapter;
 
 
     private ArrayList<book> books;
@@ -70,7 +73,9 @@ public class BookListFragment extends Fragment {
         if (getArguments() != null) {
             books = (ArrayList) getArguments().getSerializable(ARG_PARAM1);
             Log.d("Books", books.toArray().toString());
+            //((BaseAdapter) listView.getAdapter()).notifyDataSetChanged();
         }
+
     }
 
     @Override
@@ -81,20 +86,7 @@ public class BookListFragment extends Fragment {
 
         //final ListView list = layout.findViewById(R.id.list);
 
-        final Button searchButton = layout.findViewById(R.id.searchButton);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                EditText editText = layout.findViewById(R.id.editText);
-
-                String searchTerm = editText.getText().toString();
-
-                mListener.onFragmentInteraction(searchTerm);
-
-            }
-        });
 
 
 
@@ -103,11 +95,12 @@ public class BookListFragment extends Fragment {
         //ArrayAdapter<HashMap<String,String>> arrayAdapter = new ArrayAdapter<HashMap<String, String>>(BookListFragment.super.getContext(),android.R.layout.simple_list_item_1, books);
 
         // Create the adapter to convert the array to views
-        bookAdapter adapter = new bookAdapter(getContext(), books);
+        adapter = new bookAdapter(getContext(), books);
 
 // Attach the adapter to a ListView
         ListView listView = (ListView) layout.findViewById(R.id.list);
         listView.setAdapter(adapter);
+        //adapter.notifyDataSetChanged();
         //list.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -174,6 +167,24 @@ public class BookListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
 
         void onFragmentInteraction(int position);
-        void onFragmentInteraction(String searchTerm);
+
     }
+
+    public void updateBooks(ArrayList<book> bookList)
+    {
+        adapter.notifyDataSetChanged();
+
+    }//end update books method
+
+
+
+    /*
+
+    in updateBooks(..)
+
+    {
+
+        adapter.notifyDataSetChanged();
+    }
+     */
 }

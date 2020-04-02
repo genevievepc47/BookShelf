@@ -6,6 +6,8 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
    int orientation;
    RequestQueue requestQueue;
     String searchTerm = "";
+    BookListFragment bookListFragment = new BookListFragment();
+    BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+    book selectedBook;
 
    ArrayList<book> bookList = new ArrayList<>();
     //ArrayList<book> returnArray = new ArrayList<>();
@@ -37,15 +42,97 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(savedInstanceState != null)
+        {
+        bookList = (ArrayList) savedInstanceState.getSerializable("books");
+        selectedBook = (book) savedInstanceState.getSerializable("selectedBook");
+        }
+
         requestQueue = Volley.newRequestQueue(this);
+
+
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("books",bookList);
+        bookListFragment.setArguments(bundle);
+
+
+        getSupportFragmentManager()
+        .beginTransaction()
+        .replace(R.id.container1, bookListFragment)
+        .commit();
+
+        View checkContainer2 = findViewById(R.id.container2);
+
+        if(checkContainer2 == null) { //if in portrait
+            if(selectedBook != null)
+            {
+                Bundle bundle2 = new Bundle();
+                bundle2.putSerializable("book",selectedBook);
+
+
+                bookDetailsFragment.setArguments(bundle2);
+
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container1, bookDetailsFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        }
+        else//in landscape
+        {
+            Bundle bundle2 = new Bundle();
+            bundle2.putSerializable("book",selectedBook);
+
+
+            bookDetailsFragment.setArguments(bundle2);
+
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container2, bookDetailsFragment)
+                    .commit();
+
+        }
+
+
+
+        //if there is a selected book and only one container then put the book details fragment on top
+
+        //set up fragments, attach both fragments(if container 2 exists)
 
         //Toast.makeText(MainActivity.this, "toast works " , Toast.LENGTH_SHORT).show();
 
 
+        final Button searchButton = findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                EditText editText = findViewById(R.id.editText);
+
+                searchTerm = editText.getText().toString();
+
+
+                getBooks();
+
+                if(getSupportFragmentManager().findFragmentById(R.id.container1) instanceof BookDetailsFragment)
+                {
+                    getSupportFragmentManager().popBackStack();
+                }
+
+                //check which fragment is on top. if its the detail one pop it off the top
+                ///findFragmentbyId(container) will return the top fragment, if its book details fragment then pop it off
+                //popBackstack()//cann to pop detail fragment off and then call updateBooks()
+
+            }
+        });
 
 
 
-        getBooks();
 
 
         //Toast.makeText(MainActivity.this, bookList.get(1).getBookAuthor(), Toast.LENGTH_SHORT).show();
@@ -54,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
 
     }
+
 
     // The Activity handles receiving a message from one Fragment
     // and passing it on to the other Fragment
@@ -65,8 +153,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if(checkContainer2 == null) { //if in portrait
             Bundle bundle = new Bundle();
             bundle.putSerializable("book", bookList.get(position));
+            selectedBook = bookList.get(position);
 
-            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+
+            //BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
             bookDetailsFragment.setArguments(bundle);
 
 
@@ -81,34 +171,28 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         {
             Bundle bundle = new Bundle();
             bundle.putSerializable("book", bookList.get(position));
+            selectedBook = bookList.get(position);
 
-            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
-            bookDetailsFragment.setArguments(bundle);
+            //BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
+            bookDetailsFragment.displayBook(selectedBook);
 
-
+            /*
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.container2, bookDetailsFragment)
                     .commit();
+
+             */
         }
     }
 
-    @Override
-    public void onFragmentInteraction(String searchTerm) {
-        this.searchTerm = searchTerm;
-        getBooks();
 
-    }
 
 
     private void getBooks()
     {
         bookList.clear();
 
-
-        //Toast.makeText(MainActivity.this, "in get books method ", Toast.LENGTH_SHORT).show(); works
-
-        //ArrayList<book> bookList = new ArrayList<>();
 
 
 
@@ -189,45 +273,16 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     private void setUpFragment(ArrayList<book> bookList)
     {
-        //put in the book list fragment
-        //Toast.makeText(MainActivity.this, "in set up method " + bookList.get(0).getBookAuthor(), Toast.LENGTH_SHORT).show(); not working
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("books",bookList);
-        //make update books method in book list fragment
+        bookListFragment.updateBooks(bookList);
+    }
 
-        BookListFragment bookListFragment = new BookListFragment();
-        bookListFragment.setArguments(bundle);
-
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container1, bookListFragment)
-                .commit();
-
-        int position =0;
-
-        //change to checking if there is a second container, find view by id and check if it is null
-
-        View checkContainer2 = findViewById(R.id.container2);
-
-        orientation = getResources().getConfiguration().orientation;
-        if (checkContainer2 != null) {
-            // In landscape
-            Bundle bundle2 = new Bundle();
-            bundle2.putSerializable("book",bookList.get(position));
-
-            BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
-            bookDetailsFragment.setArguments(bundle2);
-
-
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container2, bookDetailsFragment)
-                    .commit();
-
-
-        }
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("books", bookList);
+        outState.putSerializable("selectedBook", selectedBook);
     }
 
 }

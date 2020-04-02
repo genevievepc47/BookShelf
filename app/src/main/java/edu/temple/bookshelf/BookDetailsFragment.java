@@ -78,7 +78,8 @@ public class BookDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         layout =  inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        displayBook( book);
+        if (book != null)
+            displayBook( book);
 
 
 
