@@ -1,9 +1,15 @@
 package edu.temple.bookshelf;
 
 import androidx.appcompat.app.AppCompatActivity;
+import edu.temple.audiobookplayer.AudiobookService;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +35,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
    int orientation;
+
    RequestQueue requestQueue;
     String searchTerm = "";
     BookListFragment bookListFragment = new BookListFragment();
@@ -37,10 +44,42 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
    ArrayList<book> bookList = new ArrayList<>();
     //ArrayList<book> returnArray = new ArrayList<>();
+
+
+
+    Intent serviceIntent;
+    AudiobookService.MediaControlBinder binder;
+    boolean connected;
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (AudiobookService.MediaControlBinder) service;
+            connected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            connected = false;
+
+
+        }
+    } ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        serviceIntent = new Intent(MainActivity.this, edu.temple.audiobookplayer.AudiobookService.class);
+
+        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
+
+
+
+
+
 
         if(savedInstanceState != null)
         {
