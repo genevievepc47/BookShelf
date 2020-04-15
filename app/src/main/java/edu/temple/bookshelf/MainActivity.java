@@ -168,7 +168,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 //popBackstack()//cann to pop detail fragment off and then call updateBooks()
 
             }
-        });
+        });//end search button listener
+
+        //stop button
+        Button stopButton = findViewById(R.id.stopButton);
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binder.stop();
+                //should i erase the now playing?
+            }
+        });//end stop button
 
 
 

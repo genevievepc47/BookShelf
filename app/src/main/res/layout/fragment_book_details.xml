@@ -8,46 +8,45 @@ android:orientation="horizontal"
 android:layout_margin="10dp"
 tools:context=".BookDetailsFragment">    >
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_gravity="center">
-
-    <Button
-        android:id="@+id/playButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play"
-        tools:text="Play" />
-
-    <TextView
-        android:id="@+id/bookName"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:padding="5dp"
+        android:orientation="vertical">
 
-        android:textSize="20sp"
+        <Button
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            tools:text="Play" />
 
-        />
+        <TextView
+            android:id="@+id/bookName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="16sp"
-        android:id="@+id/bookAuthor"
-        />
+            android:textSize="20sp"
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="318dp"
-        android:layout_height="424dp"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:src="@android:drawable/divider_horizontal_dark" />
+            />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/bookAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="318dp"
+            android:layout_height="424dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:src="@android:drawable/divider_horizontal_dark" />
+
+    </LinearLayout>
 
 </LinearLayout>

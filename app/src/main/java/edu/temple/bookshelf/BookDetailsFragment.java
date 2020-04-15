@@ -96,6 +96,8 @@ public class BookDetailsFragment extends Fragment {
             }
         });
 
+        //pause buton, stop button (middle), seek bar(bottom), now playing text box(lots of room at the top
+
 
 
 
