@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements BookListFragment.OnFragmentInteractionListener,  BookDetailsFragment.OnFragmentInteractionListener  {
    int orientation;
 
    RequestQueue requestQueue;
@@ -181,9 +181,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     }
 
+    //the user clicked play in the book details fragment
+    //start playing the book!
+    @Override
+    public void onPlayButtonClick(int id)
+    {
+        binder.play(id);
+    }
 
     // The Activity handles receiving a message from one Fragment
     // and passing it on to the other Fragment
+    //if the user clicks a book
     @Override
     public void onFragmentInteraction(int position) {
 
@@ -264,9 +272,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                                 String title = book.getString("title");
                                 String author = book.getString("author");
                                 String bookURL = book.getString("cover_url");
+                                int duration = book.getInt("duration");
 
 
-                                book newBook = new book(title, author, id, bookURL);
+                                book newBook = new book(title, author, id, bookURL, duration);
 
 
 

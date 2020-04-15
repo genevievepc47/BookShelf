@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -81,6 +83,19 @@ public class BookDetailsFragment extends Fragment {
         if (book != null)
             displayBook( book);
 
+        Button playButton = layout.findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mListener != null)
+                {
+                    mListener.onPlayButtonClick(book.getbookId());
+                }
+
+            }
+        });
+
 
 
 
@@ -105,13 +120,13 @@ public class BookDetailsFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+    //public void onButtonPressed(Uri uri) {
+      //  if (mListener != null) {
+        //    mListener.onPlayButtonClick(uri);
+        //}
+    //}
 
-    /*
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -123,7 +138,7 @@ public class BookDetailsFragment extends Fragment {
         }
     }
 
-     */
+
 
     @Override
     public void onDetach() {
@@ -143,6 +158,6 @@ public class BookDetailsFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onPlayButtonClick(int id);
     }
 }

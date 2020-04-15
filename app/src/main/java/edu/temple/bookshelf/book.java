@@ -8,16 +8,18 @@ public class book implements Serializable {
         public String title;
         public String author;
         public int id;
+        public int duration;
 
 
 
     public String coverURL;
 
-        public book(String bookName, String bookAuthor, int id, String coverURL) {
+        public book(String bookName, String bookAuthor, int id, String coverURL, int duration) {
             this.title = bookName;
             this.author = bookAuthor;
             this.id = id;
             this.coverURL = coverURL;
+            this.duration = duration;
         }
 
     //retrieve book's name
