@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -177,6 +178,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             public void onClick(View v) {
                 binder.stop();
                 //should i erase the now playing?
+                TextView playingText = findViewById(R.id.nowPlayingText);
+                playingText.setText("Now Playing: ");
             }
         });//end stop button
 
@@ -197,6 +200,20 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void onPlayButtonClick(int id)
     {
         binder.play(id);
+
+        //change the now playing text
+        //loop through all the books, match the id
+        String bookTitle = "";
+        for(int i =0; i < bookList.size(); i++)
+        {
+            if(bookList.get(i).getbookId() == id)
+            {
+                bookTitle = bookList.get(i).getBookName();
+            }
+        }
+
+        TextView playingText = findViewById(R.id.nowPlayingText);
+        playingText.setText("Now Playing: " + bookTitle);
     }
 
     // The Activity handles receiving a message from one Fragment
