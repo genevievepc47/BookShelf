@@ -43,6 +43,8 @@ public class book implements Serializable {
         return coverURL;
     }
 
+    public int getBookDuration(){return duration;}
+
     public void setCoverURL(String coverURL) {
         this.coverURL = coverURL;
     }

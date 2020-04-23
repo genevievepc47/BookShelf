@@ -83,18 +83,8 @@ public class BookDetailsFragment extends Fragment {
         if (book != null)
             displayBook( book);
 
-        Button playButton = layout.findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if(mListener != null)
-                {
-                    mListener.onPlayButtonClick(book.getbookId());
-                }
 
-            }
-        });
 
         //pause buton, stop button (middle), seek bar(bottom), now playing text box(lots of room at the top
 
@@ -104,7 +94,7 @@ public class BookDetailsFragment extends Fragment {
         return layout;
     }
 
-    public void displayBook(book newBook)
+    public void displayBook(final book newBook)
     {
         TextView nameTextView = layout.findViewById(R.id.bookName);
         nameTextView.setText(newBook.getBookName());
@@ -114,6 +104,20 @@ public class BookDetailsFragment extends Fragment {
 
         ImageView coverImageView = layout.findViewById(R.id.imageView);
         Picasso.get().load(newBook.getbookCoverURL()).into(coverImageView);
+
+        Button playButton = layout.findViewById(R.id.playButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(mListener != null)
+                {
+
+                    mListener.onPlayButtonClick(newBook.getbookId());
+                }
+
+            }
+        });
 
 
 

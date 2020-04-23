@@ -8,12 +8,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     BookListFragment bookListFragment = new BookListFragment();
     BookDetailsFragment bookDetailsFragment = new BookDetailsFragment();
     book selectedBook;
+    SeekBar seekBar;
+
 
    ArrayList<book> bookList = new ArrayList<>();
     //ArrayList<book> returnArray = new ArrayList<>();
@@ -56,7 +62,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             binder = (AudiobookService.MediaControlBinder) service;
+            binder.setProgressHandler(mhandler);
             connected = true;
+
+
         }
 
         @Override
@@ -67,15 +76,61 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         }
     } ;
 
+    //declare handler here
+    //
+    //book progress object received every second
+    //tell seek bar to set progress
+
+    Handler mhandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+
+            AudiobookService.BookProgress progressOb = (AudiobookService.BookProgress) msg.obj;
+            if(progressOb != null) {
+                int bookId = progressOb.getBookId();
+                int duration = 1;
+
+                for (int i = 0; i < bookList.size(); i++) {
+                    if (bookList.get(i).getbookId() == bookId) {
+                        duration = bookList.get(i).getBookDuration();
+                    }
+                }
+
+                seekBar.setMax(0);
+                seekBar.setMax(duration);
+
+                int progress = progressOb.getProgress();
+
+                seekBar.setProgress(progress);//how to call that?
+
+            }
+            return false;
+        }
+    });
+
+
+
+
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        unbindService(serviceConnection);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        seekBar = findViewById(R.id.seekbar);
+
         serviceIntent = new Intent(MainActivity.this, edu.temple.audiobookplayer.AudiobookService.class);
 
         bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE);
+
 
 
 
@@ -180,8 +235,45 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 //should i erase the now playing?
                 TextView playingText = findViewById(R.id.nowPlayingText);
                 playingText.setText("Now Playing: ");
+                stopService(serviceIntent);
             }
         });//end stop button
+
+        //pause button
+        Button pauseButton = findViewById(R.id.pauseButton);
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binder.pause();
+            }
+        });//end pause button
+
+        //seek bar eek
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //service tells me a second passed
+                //user drags bar
+                //boolean value from user, tell if the user dragged it
+                //if the user doesnt change it, dont worry about it
+                if (fromUser == true)
+                {
+                    binder.seekTo(progress);
+                }//end if from user is true
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            //dont touch
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            //dont touch
+            }
+        });
+
 
 
 
@@ -200,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void onPlayButtonClick(int id)
     {
         binder.play(id);
+        startService(serviceIntent);
 
         //change the now playing text
         //loop through all the books, match the id
